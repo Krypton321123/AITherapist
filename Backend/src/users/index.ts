@@ -4,10 +4,12 @@ import prisma from '../utils';
 const userRouter = express.Router(); 
 
 userRouter.route('/signup').post(async (req: Request, res: Response) => {
+    console.log("came to backend")
 
     const { username, email, password, confirmPassword } = req.body; 
+    console.log(req.body)
 
-    if (!username || !email || !password || confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
         return res.status(400).json({ status: false, message: "No data found" })
     }
 
@@ -32,15 +34,17 @@ userRouter.route('/signup').post(async (req: Request, res: Response) => {
                 username, email, password
             }
         })
+        console.log(user)
 
         return res.status(200).json({ status: true, user, message: 'user successfully created' }); 
 
     } catch (err) {
         console.log('signup error: ', err)
+        return res.status(500).json({status: false, message: "Internal server error"})
     }
 })
 
-userRouter.route("login").post(async (req: Request, res: Response) => {
+userRouter.route("/login").post(async (req: Request, res: Response) => {
     const { username, password } = req.body; 
 
     try {

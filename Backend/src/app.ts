@@ -6,7 +6,7 @@ import userRouter from './users/index.js';
 const app = express(); 
 
 app.use(cors({
-    origin: true, 
+    origin: '*', 
 }))
 
 app.use(express.json()); 
