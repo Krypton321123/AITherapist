@@ -20,7 +20,7 @@ export default function Home() {
                 <TouchableOpacity className="w-[80%] h-[40px] rounded-lg bg-blue-500 text-lg  flex justify-center items-center ">
                     <Text className="text-white font-semibold text-lg">Log In</Text>
                 </TouchableOpacity>
-                <Text className="mt-4 text-lg font-semibold">Not Signed Up? <Text className="text-blue-500" onPress={() => {}}>Login</Text></Text>
+                <Text className="mt-4 text-lg font-semibold">Not Signed Up? <Text className="text-blue-500" onPress={() => {router.replace('/(onboarding)/signup')}}>Sign Up</Text></Text>
             </View>
         </SafeAreaView>
     )
