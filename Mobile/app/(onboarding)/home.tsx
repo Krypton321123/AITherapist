@@ -19,17 +19,19 @@ export default function Home() {
 
     const handleSubmit = async () => {
 
-        if (formData.username.trim() === '' || formData.password.trim() === '') {
-            return Toast.show({type: 'error', text1: "Fields are empty"})
-        }
+        // if (formData.username.trim() === '' || formData.password.trim() === '') {
+        //     return Toast.show({type: 'error', text1: "Fields are empty"})
+        // }
 
-        const response: any = await axios.post(`${API_URL}/user/login`, {username: formData.username.trim(), password: formData.password.trim()})
-        if (response.status === 200 || response.status === 201) {
-            router.push('/(main)/home'); 
-            return Toast.show({type: 'success', text1: "Logged in successfully"})
-        } else {
-            return Toast.show({type: 'error', text1: response.data.message})
-        }
+        // const response: any = await axios.post(`${API_URL}/user/login`, {username: formData.username.trim(), password: formData.password.trim()})
+        // if (response.status === 200 || response.status === 201) {
+        //     router.push('/(main)/home'); 
+        //     return Toast.show({type: 'success', text1: "Logged in successfully"})
+        // } else {
+        //     return Toast.show({type: 'error', text1: response.data.message})
+        // }
+
+        router.push('/(main)/home'); 
     }
 
     
