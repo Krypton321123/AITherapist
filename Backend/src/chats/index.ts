@@ -68,11 +68,11 @@ chatRouter.route('/call').post(upload.single('file'), async (req: Request, res: 
         return res.status(400).json({ error: 'No file uploaded' });
       }
   
-      // Convert audio file to Base64
+     
       const audioBuffer = fs.readFileSync(req.file.path);
       const audioBase64 = audioBuffer.toString('base64');
   
-      // Call Gemini API for transcription
+      
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       const response: any = await model.generateContent([
         { type: 'text', text: 'Transcribe this audio:' },
@@ -83,10 +83,10 @@ chatRouter.route('/call').post(upload.single('file'), async (req: Request, res: 
   
       console.log("Transcribed Text:", transcription);
       
-      // Send back response
+     
       res.json({ text: transcription });
   
-      // Cleanup uploaded file
+      
       fs.unlinkSync(req.file.path);
     } catch (error) {
       console.error('Error in transcription:', error);
