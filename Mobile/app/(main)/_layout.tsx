@@ -2,11 +2,15 @@ import { Stack, useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OnboardingLayout() {
     const router = useRouter();
 
+   
+
     return (
+      
         <Stack screenOptions={{ headerShadowVisible: false }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen

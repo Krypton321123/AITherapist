@@ -60,38 +60,38 @@ chatRouter.route('/create').post(async (req: Request, res: Response) => {
 });
 
 
-chatRouter.route('/call').post(upload.single('file'), async (req: Request, res: Response) => {
-    try {
-      console.log("Received file:", req.file);
+// chatRouter.route('/call').post(upload.single('file'), async (req: Request, res: Response) => {
+//     try {
+//       console.log("Received file:", req.file);
   
-      if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-      }
+//       if (!req.file) {
+//         return res.status(400).json({ error: 'No file uploaded' });
+//       }
   
      
-      const audioBuffer = fs.readFileSync(req.file.path);
-      const audioBase64 = audioBuffer.toString('base64');
+//       const audioBuffer = fs.readFileSync(req.file.path);
+//       const audioBase64 = audioBuffer.toString('base64');
   
       
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-      const response: any = await model.generateContent([
-        { type: 'text', text: 'Transcribe this audio:' },
-        { type: 'audio', source: { data: audioBase64, mime_type: 'audio/mpeg' } }
-      ]);
+//       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+//       const response: any = await model.generateContent([
+//         { type: 'text', text: 'Transcribe this audio:' },
+//         { type: 'audio', source: { data: audioBase64, mime_type: 'audio/mpeg' } }
+//       ]);
   
-      const transcription = response.candidates[0]?.content.parts[0]?.text || 'Transcription failed';
+//       const transcription = response.candidates[0]?.content.parts[0]?.text || 'Transcription failed';
   
-      console.log("Transcribed Text:", transcription);
+//       console.log("Transcribed Text:", transcription);
       
      
-      res.json({ text: transcription });
+//       res.json({ text: transcription });
   
       
-      fs.unlinkSync(req.file.path);
-    } catch (error) {
-      console.error('Error in transcription:', error);
-      res.status(500).json({ error: 'Transcription failed' });
-    }
-  });
+//       fs.unlinkSync(req.file.path);
+//     } catch (error) {
+//       console.error('Error in transcription:', error);
+//       res.status(500).json({ error: 'Transcription failed' });
+//     }
+//   });
 
 export default chatRouter; 

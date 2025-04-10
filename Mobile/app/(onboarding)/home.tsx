@@ -2,10 +2,11 @@ import API_URL from "@/api";
 import CustomTextInput from "@/components/onboarding/customTextInput";
 import axios from "axios";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 
@@ -19,19 +20,24 @@ export default function Home() {
 
     const handleSubmit = async () => {
 
-        // if (formData.username.trim() === '' || formData.password.trim() === '') {
-        //     return Toast.show({type: 'error', text1: "Fields are empty"})
-        // }
+        console.log("we are here")
 
-        // const response: any = await axios.post(`${API_URL}/user/login`, {username: formData.username.trim(), password: formData.password.trim()})
-        // if (response.status === 200 || response.status === 201) {
-        //     router.push('/(main)/home'); 
-        //     return Toast.show({type: 'success', text1: "Logged in successfully"})
-        // } else {
-        //     return Toast.show({type: 'error', text1: response.data.message})
-        // }
+        if (formData.username.trim() === '' || formData.password.trim() === '') {
+            return Toast.show({type: 'error', text1: "Fields are empty"})
+        }
 
-        router.push('/(main)/home'); 
+        const response: any = await axios.post(`${API_URL}/user/login`, {username: formData.username.trim(), password: formData.password.trim()})
+        console.log(response)
+        if (response.status === 200 || response.status === 201) {
+            await AsyncStorage.setItem("userId", response.data.userId)
+            await AsyncStorage.setItem("loggedIn", "true")
+            router.push('/(main)/home'); 
+            return Toast.show({type: 'success', text1: "Logged in successfully"})
+        } else {
+            return Toast.show({type: 'error', text1: response.data.message})
+        }
+
+         
     }
 
     

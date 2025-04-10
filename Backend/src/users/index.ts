@@ -63,7 +63,7 @@ userRouter.route("/login").post(async (req: Request, res: Response) => {
             return res.status(403).json({ status: false, message: 'Password not matching, try again' })
         }
 
-        return res.status(200).json({status: true, message: "user logged in successfully"})
+        return res.status(200).json({status: true, message: "user logged in successfully", userId: user.user_id})
 
     } catch(err) {
         console.log('login error: ', err)

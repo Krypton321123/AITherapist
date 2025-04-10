@@ -80,3 +80,7 @@ yarn-error.*
 app-example
 dist
 dist/
+txt_conversations
+dataset.jsonl
+Model
+Model/**/*
