@@ -13,11 +13,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum sleepQuality {
+  GOOD 
+  POOR 
+  FAIR 
+  WORST 
+  EXCELLENT
+}
 model User {
   user_id       String         @id @default(cuid())
-  username      String
+  username      String         @unique
+  phone_no      String 
+  fullName      String 
   password      String
-  email         String
+  goal          String?
+  gender        String?
+  age           Int?
+  sleepQuality  String?
+  medication    Boolean?
+  dataComplete  Boolean
   conversations Conversation[]
 }
 

@@ -6,22 +6,20 @@ const userRouter = express.Router();
 userRouter.route('/signup').post(async (req: Request, res: Response) => {
     console.log("came to backend")
 
-    const { username, email, password, confirmPassword } = req.body; 
+    const { username, password, phone_no, fullName } = req.body; 
     console.log(req.body)
 
-    if (!username || !email || !password || !confirmPassword) {
+    if (!username || !phone_no || !password || !fullName ) {
         return res.status(400).json({ status: false, message: "No data found" })
     }
 
     try {
 
-        if (password !== confirmPassword) {
-            return res.status(400).json({ status: false, message: 'password did not matched' }); 
-        }
+       
 
         const existingUser = await prisma.user.findFirst({
             where: {
-                username, email
+                username
             }
         })
 
@@ -31,7 +29,7 @@ userRouter.route('/signup').post(async (req: Request, res: Response) => {
 
         const user = await prisma.user.create({
             data: {
-                username, email, password
+                username, password, fullName, phone_no, dataComplete: false
             }
         })
         console.log(user)
@@ -63,10 +61,39 @@ userRouter.route("/login").post(async (req: Request, res: Response) => {
             return res.status(403).json({ status: false, message: 'Password not matching, try again' })
         }
 
-        return res.status(200).json({status: true, message: "user logged in successfully", userId: user.user_id})
+        return res.status(200).json({status: true, message: "user logged in successfully", user})
 
     } catch(err) {
         console.log('login error: ', err)
+    }
+})
+
+userRouter.route('/completeData').post(async (req: Request, res: Response) => {
+    const { data, username } = req.body; 
+    const { goal, gender, age, medication, sleepQuality } = data; 
+    console.log(data, username)
+
+    try {
+
+        if (!goal || !gender || !age || !medication || !sleepQuality || !username) {
+            return res.status(400).json({ status: false, data: {}, message: "Data missing" })
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: {
+                username
+            }, 
+            data: {
+                goal, age, gender, sleepQuality, medication
+            }
+        })
+
+        return res.status(200).json({ status: false, data: updatedUser, message: "Data updated successfully" })
+
+
+    } catch (err) {
+        console.log("data complete err: ", err)
+        return res.status(500).json({ status: false, data: {}, message: 'Internal server error' })
     }
 })
 
