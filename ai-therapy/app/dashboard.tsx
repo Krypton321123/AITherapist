@@ -12,6 +12,7 @@ import axios from 'axios'
 import API_URL from '@/constants/API_URL';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const Dashboard: React.FC = () => {
   const [showMoodSelector, setShowMoodSelector] = useState<boolean>(true);
   const [username, setUsername] = useState<string | null>(null)
