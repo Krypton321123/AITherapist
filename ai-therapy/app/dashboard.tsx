@@ -1,27 +1,81 @@
- import React, { useState } from 'react';
- import { useRouter } from 'expo-router';
- const router = useRouter();
-
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+  import React, { useEffect, useState } from 'react';
+  import { useRouter } from 'expo-router';
+  import {
+    View,
+    Text,
+    Image,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,} from 'react-native';
 import { Ionicons, Feather, FontAwesome5 } from '@expo/vector-icons';
+import axios from 'axios'
+import API_URL from '@/constants/API_URL';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Dashboard: React.FC = () => {
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [showMoodSelector, setShowMoodSelector] = useState<boolean>(true);
+  const [username, setUsername] = useState<string | null>(null)
+  const router = useRouter();
 
   const moods = [
-    { icon: require('../assets/red.png'), label: 'Sad' },
-    { icon: require('../assets/orange.png'), label: 'Anxious' },
-    { icon: require('../assets/grey.png'), label: 'Neutral' },
-    { icon: require('../assets/green.png'), label: 'Happy' },
-    { icon: require('../assets/green2.png'), label: 'Excited' },
+    { icon: require('../assets/red.png'), label: 'Sad', value: 'SAD' },
+    { icon: require('../assets/orange.png'), label: 'Anxious', value: 'ANXIOUS' },
+    { icon: require('../assets/grey.png'), label: 'Neutral', value: 'NEUTRAL' },
+    { icon: require('../assets/green.png'), label: 'Happy', value: 'HAPPY' },
+    { icon: require('../assets/green2.png'), label: 'Excited', value: 'EXCITED' },
   ];
+
+  useEffect(() => {
+    const getUsername = async () => {
+      const temp = await AsyncStorage.getItem('username')
+      setUsername(temp);
+    }
+
+    getUsername();
+    
+  }, [])
+
+  useEffect(() => {
+    const checkMood = async () => {
+      const moodStatus = await AsyncStorage.getItem('moodTrack'); 
+      if (!moodStatus) {
+        return alert('No mood found')
+      }
+      const jsonMood: {date: string, status: boolean} = JSON.parse(moodStatus)
+      console.log(jsonMood)
+
+      const today = new Date(Date.now())
+
+      if (jsonMood.date !== today.toLocaleDateString('en-GB')) {
+        return setShowMoodSelector(true)
+      }
+
+      if (jsonMood.status === false) {
+        return setShowMoodSelector(true)
+      }
+
+      return setShowMoodSelector(false)
+    }
+
+    checkMood()
+  }, [])
+
+  const handleMoodSelect = async (mood: string) => {
+    const date = new Date(Date.now()); 
+
+    
+    const response = await axios.post(`${API_URL}/user/addMood`, {username, date: date.toISOString(), mood})
+
+    if (response.status === 200 || response.status === 201) {
+      setShowMoodSelector(false)
+      await AsyncStorage.setItem('moodTrack', JSON.stringify({
+        date: date.toLocaleDateString('en-GB'),
+        status: true
+      }))
+      return;
+    } 
+
+  }
 
   return (
     <>
@@ -40,21 +94,18 @@ const Dashboard: React.FC = () => {
         </View>
 
         {/* Mood card */}
-        <View style={styles.moodCard}>
+        {showMoodSelector && (
+          <View style={styles.moodCard}>
           <Text style={styles.moodCardText}>How do you feel today?</Text>
           <View style={styles.moodIconRow}>
             {moods.map((item, index) => (
-              <TouchableOpacity key={index} onPress={() => setSelectedMood(item.label)}>
+              <TouchableOpacity key={index} onPress={() => {handleMoodSelect(item.value)}}>
                 <Image source={item.icon} style={styles.moodIcon} />
               </TouchableOpacity>
             ))}
           </View>
-          {selectedMood && (
-            <Text style={{ marginTop: 12, fontSize: 16, fontWeight: '600', color: '#3e3e2a' }}>
-              You feel: {selectedMood}
-            </Text>
-          )}
         </View>
+         )}
 
         {/* Chat options */}
         <View style={styles.chatContainer}>

@@ -1,8 +1,11 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fdf9f7', alignItems: 'center', justifyContent: 'center', padding: 20 }}>

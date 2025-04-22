@@ -1,10 +1,59 @@
 
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'
+import API_URL from '@/constants/API_URL';
+
+interface MoodData {
+  date: string
+  mood: string 
+  username: string
+}
 
 const MoodStats = () => {
   const dates = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'];
   const moods = ['😐', '😄', '😢', '😁', '🙂', '😐', '😌'];
+  const moodEmojiMap: Record<string, string> = {
+    HAPPY: '😄',
+    SAD: '😢',
+    NEUTRAL: '😐',
+    EXCITED: '😁',
+    CALM: '🙂',
+    RELAXED: '😌',
+    ANGRY: '😠',
+  };
+  const [moodData, setMoodData] = useState<MoodData[] | null>(null)
+
+  const getPastWeekMoods = () => {
+    if (!moodData) return [];
+  
+    const week = [];
+    const today = new Date();
+  
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const day = date.toLocaleDateString('en-GB', { weekday: 'short' });
+  
+      const isoDate = date.toISOString().split('T')[0];
+  
+      const moodEntry = moodData.find(m =>
+        m.date.startsWith(isoDate)
+      );
+
+      console.log(moodEntry?.mood)
+  
+      const mood = moodEntry ? moodEmojiMap[moodEntry.mood.toUpperCase()] || '❓' : '❓';
+  
+      week.push({ day, mood });
+    }
+  
+    return week;
+  };
+  
+  const weekMoods = getPastWeekMoods();
 
   const moodChart = [
     { time: '10:00', emoji: '😄', height: 100, color: '#A3DCA6' },
@@ -14,6 +63,29 @@ const MoodStats = () => {
     { time: '18:00', emoji: '😐', height: 70, color: '#D0E8A1' },
   ];
 
+  useEffect(() => {
+    const getData = async () => {
+      const username = await AsyncStorage.getItem('username'); 
+
+      try {
+
+        const response: any = await axios.post(`${API_URL}/user/getMoods`, {username})
+
+        if (response.status === 200 || response.status === 201) {
+          console.log(response.data.moodData)
+          setMoodData(response.data.moodData)
+          return; 
+        }
+
+      } catch(err) {
+        console.log(err)
+        return alert('error in fetching data')
+      }
+    }
+
+    getData(); 
+  }, [])
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
       {/* Header */}
@@ -22,18 +94,18 @@ const MoodStats = () => {
 
       {/* Calendar Strip */}
       <View style={styles.calendarRow}>
-        {dates.map((day, idx) => (
-          <View
-            key={idx}
-            style={[
-              styles.dayItem,
-              idx === 3 && styles.selectedDay,
-            ]}
-          >
-            <Text style={[styles.dayText, idx === 3 && styles.dayTextSelected]}>{day}</Text>
-            <Text style={styles.emoji}>{moods[idx]}</Text>
-          </View>
-        ))}
+      {weekMoods.map((item, idx) => (
+  <View
+    key={idx}
+    style={[
+      styles.dayItem,
+      idx === weekMoods.length - 1 && styles.selectedDay, // Today
+    ]}
+  >
+    <Text style={[styles.dayText, idx === weekMoods.length - 1 && styles.dayTextSelected]}>{item.day}</Text>
+    <Text style={styles.emoji}>{item.mood}</Text>
+  </View>
+))}
       </View>
 
       {/* Check-in */}

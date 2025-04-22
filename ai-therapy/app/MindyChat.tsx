@@ -10,34 +10,32 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios'
+import API_URL from '@/constants/API_URL';
 
 const ChatWithMindy: React.FC = () => {
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
   const [inputText, setInputText] = useState('');
 
-  // Predefined chatbot responses
-  const getBotResponse = (userMessage: string): string => {
-    const responses: { [key: string]: string } = {
-      hello: 'Hi there! How can I assist you today? 😊',
-      stress: 'I understand. Do you want to try a relaxation technique? 🌿',
-      anxiety: 'Deep breathing can help. Would you like a guide? 🧘‍♀️',
-      happy: 'That’s wonderful! Keep spreading positivity! 🌞',
-      default: "I'm here to listen. Tell me more. 💙",
-    };
+  const getBotResponse: (messageHistory: any[]) => Promise<void> = async (messageHistory: any[]) => {
+    const response: any = await axios.post(`${API_URL}/chat/generate`, {messageHistory}) 
+    const botMessage = { text: response.data.generatedText, isUser: false };
 
-    const lowerCaseMessage = userMessage.toLowerCase();
-    return responses[lowerCaseMessage] || responses.default;
+    setMessages((prev) => [...prev, botMessage]);
   };
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (inputText.trim().length === 0) return;
-
+  
     const userMessage = { text: inputText, isUser: true };
-    const botMessage = { text: getBotResponse(inputText), isUser: false };
-
-    setMessages([...messages, userMessage, botMessage]);
+  
+  
+    const updatedMessages = [...messages, userMessage];
+  
+  
+    setMessages(updatedMessages);
     setInputText('');
-    console.log(messages)
+    getBotResponse(updatedMessages);
   };
 
   return (

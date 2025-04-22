@@ -18,16 +18,16 @@ const model = genAI.getGenerativeModel(
 const upload = multer({dest: 'uploads/'})
 
 
-chatRouter.route('/create').post(async (req: Request, res: Response) => {
-    const { chatHistory } = req.body; // Receive chat history
+chatRouter.route('/generate').post(async (req: Request, res: Response) => {
+    const { messageHistory } = req.body; // Receive chat history
 
-    console.log(chatHistory)
+    console.log(messageHistory)
 
     let AIResponse = '';
 
     try {
         // Convert chat history to a formatted conversation string
-        const conversation = chatHistory.map(({ sender, text }: { sender: string, text: string }) => `${sender}: "${text}"`).join("\n");
+        const conversation = messageHistory.map(({ isUser, text }: { isUser: boolean, text: string }) => `${isUser ? 'User: ' : 'AI: '}: "${text}"`).join("\n");
 
         console.log(conversation)
 
@@ -52,7 +52,7 @@ chatRouter.route('/create').post(async (req: Request, res: Response) => {
         }); 
 
         console.log(AIResponse);
-        return res.status(200).json({ status: true, message: "Response generated successfully", response: AIResponse });
+        return res.status(200).json({ status: true, message: "Response generated successfully", generatedText: AIResponse });
     } catch (err) {
         console.log("Generation error: ", err);
         return res.status(500).json({ status: false, message: "Internal Server Error" });

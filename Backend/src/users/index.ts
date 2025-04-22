@@ -84,7 +84,7 @@ userRouter.route('/completeData').post(async (req: Request, res: Response) => {
                 username
             }, 
             data: {
-                goal, age, gender, sleepQuality, medication
+                goal, age, gender, sleepQuality, medication, dataComplete: true
             }
         })
 
@@ -94,6 +94,61 @@ userRouter.route('/completeData').post(async (req: Request, res: Response) => {
     } catch (err) {
         console.log("data complete err: ", err)
         return res.status(500).json({ status: false, data: {}, message: 'Internal server error' })
+    }
+})
+
+userRouter.route('/addMood').post(async (req: Request, res: Response) => {
+    const { username, date, mood } = req.body; 
+
+    try {
+
+        if (!username || !date || !mood) {
+            return res.status(400).json({ status: false, message: "Data missing" })
+        }
+
+        const addedMood = await prisma.moodTrack.create({
+            data: {
+                username, date, mood
+            }
+        })
+
+        return res.status(200).json({ status: true, message: "Mood added successfully", data: {mood: addedMood} })
+
+    } catch(err) {
+        console.log("Add mood error")
+        return res.status(500).json({ status: false, message: "Internal server error" })
+    }
+})
+
+userRouter.post('/getMoods', async (req: Request, res: Response) => {
+    const { username } = req.body; 
+
+    try {
+    
+        const user = await prisma.user.findUnique({
+            where: {
+                username
+            }
+        })
+
+        if (!user) {
+            return res.status(400).json({ status: false, message: "This user doesn't exist" })
+        }
+
+        const getMoods = await prisma.moodTrack.findMany({
+            where: {
+                username
+            }, 
+            select: {
+                id: false, username: false, date: true, mood: true
+            }
+        })
+
+        return res.status(200).json({ status: false, message: "Moods fetched successfully", moodData: getMoods })
+
+    } catch (err) {
+        console.log("getting mood data err: ", err)
+        return res.status(500).json({ status: false, message: "Internal server error" })
     }
 })
 

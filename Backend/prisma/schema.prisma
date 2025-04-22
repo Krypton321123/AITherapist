@@ -33,6 +33,7 @@ model User {
   medication    Boolean?
   dataComplete  Boolean
   conversations Conversation[]
+  mood          moodTrack[]
 }
 
 model Conversation {
@@ -41,4 +42,19 @@ model Conversation {
   AIResponse   String[]
   userID       String
   user         User     @relation(fields: [userID], references: [user_id])
+}
+
+enum Mood {
+  NEUTRAL
+  SAD 
+  ANXIOUS 
+  HAPPY 
+  EXCITED
+}
+model moodTrack {
+  id          String   @id @default(cuid())
+  date        DateTime
+  mood        Mood
+  username      String 
+  user        User     @relation(fields: [username], references: [username])
 }

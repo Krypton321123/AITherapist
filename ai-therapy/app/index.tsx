@@ -1,19 +1,20 @@
-// app/index.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Index() {
-
-  let username;
+  const [username, setUsername] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
     const getUsername = async () => {
-      username = await AsyncStorage.getItem('username'); 
-    }
+      const stored = await AsyncStorage.getItem('username');
+      setUsername(stored);
+    };
 
-    getUsername(); 
-  }, [])
+    getUsername();
+  }, []);
 
-  return !username ? <Redirect href={'/welcome'}/> : <Redirect href={'/dashboard'}/>
+  if (username === undefined) return null; 
+
+  return username ? <Redirect href="/dashboard" /> : <Redirect href="/welcome" />;
 }
