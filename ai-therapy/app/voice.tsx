@@ -10,7 +10,7 @@ const WelcomeScreen: React.FC = () => {
   const [permissionResponse, requestPermission] = Audio.usePermissions()
   const [conversation, setConversation] = useState<{userText: string, AIResponse: string}[]>([]) 
   const [recording, setRecording] = useState<any>(); 
-  const [audioInstances, setAudioInstances] = useState<Audio.Sound[]>()
+  const [isRecording, setIsRecording] = useState<boolean>(false)
 
   useEffect(() => {
     let soundInstance: Audio.Sound;
@@ -39,7 +39,7 @@ const WelcomeScreen: React.FC = () => {
 
     if (permissionResponse === null) return;
     try {
-
+      setIsRecording(true)
 
       if (permissionResponse.status !== 'granted') {
         console.log('persmission not granted')
@@ -64,6 +64,7 @@ const WelcomeScreen: React.FC = () => {
   const stopRecording = async () => {
     console.log('Stopping recording..');
     setRecording(undefined);
+    setIsRecording(false)
    
     await recording.stopAndUnloadAsync();
     await Audio.setAudioModeAsync(
@@ -112,7 +113,7 @@ const WelcomeScreen: React.FC = () => {
       } catch (err) {
         console.log("error in playing response: ", err)
       }
-      }
+    }
 
     console.log('Recording stopped and stored at', uri);
   }
@@ -132,6 +133,7 @@ const WelcomeScreen: React.FC = () => {
       <TouchableOpacity style={styles.micButton} onPress={recording ? stopRecording : recordAudio}>
         <Ionicons name="mic" size={28} color="#4A5933" />
       </TouchableOpacity>
+      {isRecording && <Text>Listening...</Text>}
     </View>
   );
 };

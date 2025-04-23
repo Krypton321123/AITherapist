@@ -2,58 +2,86 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+const breathingTypes = {
+  "Box Breathing": { inhale: 4000, hold: 4000, exhale: 4000 },
+  "4-7-8 Breathing": { inhale: 4000, hold: 7000, exhale: 8000 },
+  "Relax Breathing": { inhale: 5000, hold: 2000, exhale: 6000 },
+};
+
 const BreathingExercise: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
-  const [phase, setPhase] = useState('Inhale');
+  const [phase, setPhase] = useState('');
+  const [selectedType, setSelectedType] = useState<BreathingType | null>(null);
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  type BreathingType = keyof typeof breathingTypes;
+  const currentTimings = selectedType ? breathingTypes[selectedType] : null;
+
   useEffect(() => {
-    if (isRunning) startBreathingCycle();
+    if (isRunning && currentTimings) startBreathingCycle();
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [isRunning]);
+  }, [isRunning, selectedType]);
 
   const startBreathingCycle = () => {
+    if (!currentTimings) return;
+
     setPhase('Inhale');
-    animateCircle(1, 2.5);
+    animateCircle(1, 2.5, currentTimings.inhale);
 
     timeoutRef.current = setTimeout(() => {
       setPhase('Hold');
-      animateCircle(2.5, 2.5);
+      animateCircle(2.5, 2.5, currentTimings.hold);
 
       timeoutRef.current = setTimeout(() => {
         setPhase('Exhale');
-        animateCircle(2.5, 1);
+        animateCircle(2.5, 1, currentTimings.exhale);
 
         timeoutRef.current = setTimeout(() => {
           if (isRunning) startBreathingCycle();
-        }, 4000);
-      }, 3000);
-    }, 4000);
+        }, currentTimings.exhale);
+      }, currentTimings.hold);
+    }, currentTimings.inhale);
   };
 
-  const animateCircle = (from: number, to: number) => {
+  const animateCircle = (from: number, to: number, duration: number) => {
     scaleAnim.setValue(from);
     Animated.timing(scaleAnim, {
       toValue: to,
-      duration: 4000,
+      duration,
       easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start();
   };
 
   const handleStartStop = () => {
-    setIsRunning(!isRunning);
-    if (!isRunning) setPhase('Inhale');
-    else setPhase('Finished');
+    if (isRunning) {
+      setIsRunning(false);
+      setPhase('Finished');
+    } else {
+      setIsRunning(true);
+    }
   };
+
+  if (!selectedType) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Choose Breathing Type</Text>
+        {Object.keys(breathingTypes).map((type: any) => (
+          <TouchableOpacity key={type} style={styles.selectButton} onPress={() => setSelectedType(type)}>
+            <Text style={styles.buttonText}>{type}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Breathing Exercise</Text>
+      <Text style={styles.title}>{selectedType}</Text>
 
       <Animated.View style={[styles.circle, { transform: [{ scale: scaleAnim }] }]} />
 
@@ -78,10 +106,11 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 30,
+    fontSize: 26,
     fontWeight: '700',
     color: '#355E3B',
     marginBottom: 30,
+    textAlign: 'center',
   },
   circle: {
     width: 200,
@@ -106,9 +135,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
+  selectButton: {
+    backgroundColor: '#355E3B',
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    borderRadius: 24,
+    marginVertical: 10,
+  },
   buttonText: {
     fontSize: 20,
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
 });
