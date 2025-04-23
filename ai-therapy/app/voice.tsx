@@ -10,23 +10,30 @@ const WelcomeScreen: React.FC = () => {
   const [permissionResponse, requestPermission] = Audio.usePermissions()
   const [conversation, setConversation] = useState<{userText: string, AIResponse: string}[]>([]) 
   const [recording, setRecording] = useState<any>(); 
- 
-  const [sound2, setSound2] = useState<Audio.Sound | null>(null)
+  const [audioInstances, setAudioInstances] = useState<Audio.Sound[]>()
 
   useEffect(() => {
+    let soundInstance: Audio.Sound;
+  
+    const speakIntro = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../assets/audio/intro.mp3')
+      );
+      soundInstance = sound;
+      console.log('playing sound...');
+      await sound.playAsync();
+    };
+  
     speakIntro();
   
+    return () => {
+      if (soundInstance) {
+        soundInstance.stopAsync();
+        soundInstance.unloadAsync();
+        console.log('Sound stopped and unloaded on screen leave');
+      }
+    };
   }, []);
-
-
-
-  const speakIntro = async () => {
-    const { sound } = await Audio.Sound.createAsync(require('../assets/audio/intro.mp3')); 
-
-    setSound2(sound)
-    console.log('playing sound...')
-    await sound.playAsync()
-  };
 
   const recordAudio = async () => {
 
@@ -117,7 +124,7 @@ const WelcomeScreen: React.FC = () => {
       </Text>
 
       <Image
-        source={require('../assets/avatar.png')} // 👈 Ensure this file exists
+        source={require('../assets/avatar.png')} 
         style={styles.image}
         resizeMode="contain"
       />

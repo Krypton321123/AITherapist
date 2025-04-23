@@ -13,8 +13,6 @@ interface MoodData {
 }
 
 const MoodStats = () => {
-  const dates = ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'];
-  const moods = ['😐', '😄', '😢', '😁', '🙂', '😐', '😌'];
   const moodEmojiMap: Record<string, string> = {
     HAPPY: '😄',
     SAD: '😢',

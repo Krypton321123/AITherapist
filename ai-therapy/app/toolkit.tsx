@@ -1,22 +1,26 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, Entypo, FontAwesome5 } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const EmergencyToolkit: React.FC = () => {
+
+  const router = useRouter()
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Emergency Toolkit</Text>
       <Text style={styles.subtitle}>Tap the buttons below{"\n"}when you’re feeling low.</Text>
 
       <View style={styles.grid}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={() => {router.push('/BreathingExcercise')}} style={styles.button}>
           <MaterialCommunityIcons name="flower-outline" size={36} color="#355E3B" />
           <Text style={styles.buttonText}>Breathing</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={() => router.push('/SelfCareScreen')} style={styles.button}>
           <Ionicons name="call" size={36} color="#355E3B" />
-          <Text style={styles.buttonText}>Call a friend</Text>
+          <Text style={styles.buttonText}>Self-Care</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button}>
@@ -24,7 +28,7 @@ const EmergencyToolkit: React.FC = () => {
           <Text style={styles.buttonText}>Uplifting{"\n"}music</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={() => {router.push('/MentalExcerciseScreen')}} style={styles.button}>
           <FontAwesome5 name="brain" size={32} color="#355E3B" />
           <Text style={styles.buttonText}>Mental{"\n"}exercise</Text>
         </TouchableOpacity>
