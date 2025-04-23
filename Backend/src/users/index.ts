@@ -14,9 +14,6 @@ userRouter.route('/signup').post(async (req: Request, res: Response) => {
     }
 
     try {
-
-       
-
         const existingUser = await prisma.user.findFirst({
             where: {
                 username

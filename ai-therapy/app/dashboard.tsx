@@ -123,14 +123,17 @@ const Dashboard: React.FC = () => {
         {/* Plans */}
         <Text style={styles.planHeader}>Your plans for today (0/5)</Text>
 
-        <View style={styles.planCard}>
-          <View style={styles.planLine} />
-          <View style={styles.planContent}>
-            <Text style={styles.planTitle}>Intro to Meditation</Text>
-            <Text style={styles.planSubtitle}>8 mins</Text>
-          </View>
-          <Image source={require('../assets/yoga1.png')} style={styles.planImage} />
-        </View>
+        <TouchableOpacity onPress={() => router.push('/MeditationScreen')}>
+           <View style={styles.planCard}>
+             <View style={styles.planLine} />
+             <View style={styles.planContent}>
+               <Text style={styles.planTitle}>Intro to Meditation</Text>
+               <Text style={styles.planSubtitle}>8 mins</Text>
+             </View>
+             <Image source={require('../assets/yoga1.png')} style={styles.planImage} />
+           </View>
+        </TouchableOpacity>
+
 
         <View style={styles.planCard}>
           <View style={styles.planLine} />
