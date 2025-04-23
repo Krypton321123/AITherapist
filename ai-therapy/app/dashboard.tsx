@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
             <Image source={require('../assets/robot.png')} style={styles.chatImage} />
             <Text style={styles.chatText}>Chat with{'\n'}Mindy</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.chatCard}>
+          <TouchableOpacity onPress={() => {router.push('/voice')}} style={styles.chatCard}>
             <Image source={require('../assets/coach.png')} style={styles.chatImage} />
             <Text style={styles.chatText}>Talk with{'\n'}Coach</Text>
           </TouchableOpacity>

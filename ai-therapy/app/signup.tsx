@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import axios from 'axios'
 import API_URL from '@/constants/API_URL';
@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Signup() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [formData, setFormData] = useState({
     fullName: '', 
     password: '', 
@@ -19,18 +20,35 @@ export default function Signup() {
     if (!formData.fullName.trim() || !formData.password.trim() || !formData.phone_no.trim() || !formData.username.trim() ) {
       return;
     }
-
-    const response: any = axios.post(`${API_URL}/user/signup`, {
-      fullName: formData.fullName.trim(), 
-      password: formData.password.trim(),
-      phone_no: formData.phone_no.trim(), 
-      username: formData.username.trim(), 
-    })
-
-    if (response.status === 200 || response.status === 201) {
-      AsyncStorage.setItem('username', formData.username)
-      return router.push('/assessment')
+    
+    try {
+      setIsLoading(true)
+      const response: any = axios.post(`${API_URL}/user/signup`, {
+        fullName: formData.fullName.trim(), 
+        password: formData.password.trim(),
+        phone_no: formData.phone_no.trim(), 
+        username: formData.username.trim(), 
+      })
+  
+      if (response.status === 200 || response.status === 201) {
+        AsyncStorage.setItem('username', response.data.user.username)
+        const initialState = {
+          fullName: '', 
+          password: '', 
+          username: '', 
+          phone_no: ''
+        }
+        setFormData(initialState)
+        Alert.alert('You have signed up successfully')
+        return router.push('/assessment')
+      }
+    } catch (err) {
+      console.log("error signing up: ", err)
+    } finally {
+      setIsLoading(false)
     }
+
+ 
 
   }
 
@@ -58,8 +76,8 @@ export default function Signup() {
         <TextInput onChangeText={(value) => { setFormData({ ...formData, password: value }) }} placeholder="Create Your Password" secureTextEntry style={styles.input} />
 
         
-        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+        <TouchableOpacity disabled={isLoading} onPress={handleSubmit} style={styles.button}>
+          <Text style={styles.buttonText}>{isLoading ? "Loading..." : "Sign Up"}</Text>
         </TouchableOpacity>
 
        
