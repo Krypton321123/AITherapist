@@ -6,13 +6,16 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Feather,
   Ionicons,
   MaterialIcons,
   FontAwesome5,
 } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const settingsOptions = [
   { label: 'Account', icon: <Feather name="user" size={18} color="#4B4B4B" /> },
@@ -51,6 +54,19 @@ const settingsOptions = [
 ];
 
 const ProfileScreen = () => {
+  
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('username');
+      Alert.alert('Logged Out', 'You have been logged out.');
+      router.replace('/welcome')
+    } catch (error) {
+      console.log('Error logging out:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Profile Header */}
@@ -83,6 +99,11 @@ const ProfileScreen = () => {
             <Ionicons name="chevron-forward" size={18} color="#B4B4B4" />
           </TouchableOpacity>
         ))}
+
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -96,7 +117,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEFFE8',
   },
   header: {
-    backgroundColor: '#CAE675', // Green header
+    backgroundColor: '#CAE675',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     paddingHorizontal: 24,
@@ -162,5 +183,18 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontSize: 16,
     color: '#333',
+  },
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 14,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginHorizontal: 4,
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
