@@ -2,39 +2,39 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { MotiView } from 'moti';
 
-const affirmations = [
-  "I am enough just as I am.",
-  "I radiate positivity and confidence.",
-  "I trust myself and my journey.",
-  "I am calm, I am peaceful, I am grounded.",
-  "I choose happiness over fear.",
-  "I am proud of the progress I’ve made.",
-  "My mind is strong and resilient.",
-  "I give myself permission to grow.",
-  "I believe in myself and my abilities.",
-  "Today, I will focus on what makes me feel good.",
-  "I am doing my best, and that is enough.",
-  "I am grateful for this moment.",
-  "I attract love, joy, and positivity.",
-  "I deserve peace and serenity.",
-  "I am in control of my thoughts and emotions.",
-  "My self-worth is not defined by others.",
-  "I let go of what I can’t control.",
-  "I celebrate my uniqueness.",
-  "Every step I take is a step forward.",
-  "I am growing and glowing."
+const selfCareTips = [
+  "Take yourself on a coffee date ☕️",
+  "Buy yourself your favorite chocolate 🍫",
+  "Watch your comfort movie 🎬",
+  "Write a love letter to yourself 💌",
+  "Go for a peaceful solo walk 🚶‍♀️",
+  "Treat yourself to a relaxing bath 🛁",
+  "Listen to your favorite music 🎧",
+  "Cook or order your favorite meal 🍜",
+  "Spend time journaling your thoughts 📝",
+  "Light a candle and just breathe 🕯️",
+  "Unplug from social media for an hour 📵",
+  "Dance like nobody's watching 💃",
+  "Compliment yourself in the mirror 💖",
+  "Wear your favorite outfit 👗",
+  "Do something creative – paint, draw, or craft 🎨",
+  "Stretch and do some gentle yoga 🧘‍♀️",
+  "Say no without guilt ❌",
+  "Declutter a small space 🌿",
+  "Drink water like it's a luxury 💧",
+  "Take a nap without shame 😴"
 ];
 
-const shuffledAffirmations = affirmations.sort(() => 0.5 - Math.random()).slice(0, 5);
+const shuffledTips = selfCareTips.sort(() => 0.3 - Math.random()).slice(0, 3);
 
 const SelfCareScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Self-Care Affirmations</Text>
+      <Text style={styles.title}>✨ Your Self-Care Tip For Today ✨</Text>
       <FlatList
-        data={shuffledAffirmations}
+        data={shuffledTips}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <FlipCard affirmation={item} />}
+        renderItem={({ item }) => <FlipCard tip={item} />}
         contentContainerStyle={styles.cardList}
         showsVerticalScrollIndicator={false}
       />
@@ -42,24 +42,34 @@ const SelfCareScreen = () => {
   );
 };
 
-const FlipCard = ({ affirmation }: { affirmation: string }) => {
+const FlipCard = ({ tip }: { tip: string }) => {
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <TouchableOpacity onPress={() => setFlipped(!flipped)}>
-      <View style={styles.cardWrapper}>
+    <TouchableOpacity onPress={() => setFlipped(!flipped)} activeOpacity={0.9}>
+      <View style={styles.card}>
+        {/* Front Side */}
         <MotiView
-          from={{ rotateY: '180deg' }}
-          animate={{ rotateY: flipped ? '180deg' : '0deg' }}
-          transition={{ type: 'timing', duration: 500 }}
-          style={[styles.card, flipped && styles.flipped]}
+          style={[StyleSheet.absoluteFill, styles.cardFace, styles.front]}
+          animate={{
+            rotateY: flipped ? '180deg' : '0deg',
+            opacity: flipped ? 0 : 1,
+          }}
+          transition={{ type: 'timing', duration: 600 }}
         >
-          <View style={[styles.cardFace, styles.front]}>
-            <Text style={styles.cardText}>Tap for Affirmation</Text>
-          </View>
-          <View style={[styles.cardFace, styles.back]}>
-            <Text style={styles.cardText}>{affirmation}</Text>
-          </View>
+          <Text style={styles.cardText}>Tap for Your Self-Care Tip 💌</Text>
+        </MotiView>
+
+        {/* Back Side */}
+        <MotiView
+          style={[StyleSheet.absoluteFill, styles.cardFace, styles.back]}
+          animate={{
+            rotateY: flipped ? '0deg' : '180deg',
+            opacity: flipped ? 1 : 0,
+          }}
+          transition={{ type: 'timing', duration: 600 }}
+        >
+          <Text style={styles.cardText}>🌿 {tip}</Text>
         </MotiView>
       </View>
     </TouchableOpacity>
@@ -71,7 +81,7 @@ export default SelfCareScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3FDE8',
+    backgroundColor: '#FFFBF5',
     paddingTop: 60,
     paddingHorizontal: 20,
   },
@@ -79,52 +89,46 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#355E3B',
+    color: '#4E665A',
     marginBottom: 20,
   },
   cardList: {
-    paddingBottom: 20,
-  },
-  cardWrapper: {
-    width: '100%',
-    height: 160,
-    marginBottom: 20,
+    paddingBottom: 30,
   },
   card: {
     width: '100%',
-    height: '100%',
+    height: 160,
     borderRadius: 16,
-    position: 'relative',
-    backfaceVisibility: 'hidden',
-    shadowColor: '#355E3B',
-    shadowOffset: { width: 0, height: 3 },
+    marginBottom: 20,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#A0A0A0',
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
-    shadowRadius: 6,
+    shadowRadius: 10,
+    elevation: 5,
+    overflow: 'hidden',
+    transformStyle: 'preserve-3d', // ensure 3D transform works
   },
   cardFace: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 30,
-    backfaceVisibility: 'hidden',
+    paddingHorizontal: 20,
   },
   front: {
-    backgroundColor: '#A0E7E5',
-    zIndex: 2,
+    backgroundColor: '#E0F7FA',
   },
   back: {
-    backgroundColor: '#B4F8C8',
-    transform: [{ rotateY: '180deg' }],
-  },
-  flipped: {
-    transform: [{ rotateY: '180deg' }],
+    backgroundColor: '#D0F0C0',
   },
   cardText: {
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: '600',
     textAlign: 'center',
     color: '#355E3B',
-    fontWeight: '600',
   },
 });

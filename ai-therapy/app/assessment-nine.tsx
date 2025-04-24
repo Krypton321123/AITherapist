@@ -33,12 +33,12 @@ const StressLevelScreen: React.FC = () => {
   const submitAssessment = async () => {
     console.log(username)
 
-    if (username === null) return; 
-    const response = await axios.post(`${API_URL}/user/completeData`, {data, username})
+    // if (username === null) return; 
+    // const response = await axios.post(`${API_URL}/user/completeData`, {data, username})
 
-    if (response.status === 200 || 201) {
+    // if (response.status === 200 || 201) {
 
-    }
+    // }
     router.push('/dashboard')
   }
 

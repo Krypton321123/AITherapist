@@ -16,41 +16,43 @@ export default function Signup() {
   })
 
   const handleSubmit = async () => {
-
-    if (!formData.fullName.trim() || !formData.password.trim() || !formData.phone_no.trim() || !formData.username.trim() ) {
+    if (!formData.fullName.trim() || !formData.password.trim() || !formData.phone_no.trim() || !formData.username.trim()) {
+      Alert.alert('Please fill all fields');
       return;
     }
-    
+  
     try {
-      setIsLoading(true)
-      const response: any = axios.post(`${API_URL}/user/signup`, {
-        fullName: formData.fullName.trim(), 
+      setIsLoading(true);
+      const response = await axios.post(`${API_URL}/user/signup`, {
+        fullName: formData.fullName.trim(),
         password: formData.password.trim(),
-        phone_no: formData.phone_no.trim(), 
-        username: formData.username.trim(), 
-      })
+        phone_no: formData.phone_no.trim(),
+        username: formData.username.trim(),
+      });
   
       if (response.status === 200 || response.status === 201) {
-        AsyncStorage.setItem('username', response.data.user.username)
-        const initialState = {
-          fullName: '', 
-          password: '', 
-          username: '', 
-          phone_no: ''
-        }
-        setFormData(initialState)
-        Alert.alert('You have signed up successfully')
-        return router.push('/assessment')
+        console.log(response.data);
+        await AsyncStorage.setItem('username', response.data.user.username);
+  
+        setFormData({
+          fullName: '',
+          password: '',
+          username: '',
+          phone_no: '',
+        });
+  
+        Alert.alert('Success', 'You have signed up successfully', [
+          { text: 'OK', onPress: () => router.push('/assessment') }
+        ]);
       }
     } catch (err) {
-      console.log("error signing up: ", err)
+      console.log("error signing up: ", err);
+      Alert.alert('Signup Failed', 'Something went wrong. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-
- 
-
-  }
+  };
+  
 
   
 

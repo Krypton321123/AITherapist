@@ -26,10 +26,10 @@ export default function WelcomeScreen() {
         <Text style={{ color: 'white' }}>Get Started →</Text>
       </TouchableOpacity>
 
-      <Text style={{ marginTop: 20 }}>
+      {/* <Text style={{ marginTop: 20 }}>
         Already have an account?{' '}
         <Text style={{ color: '#f77f00' }}>Sign In</Text>
-      </Text>
+      </Text> */}
     </View>
   );
 }

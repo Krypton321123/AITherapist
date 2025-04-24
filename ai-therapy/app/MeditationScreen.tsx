@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
-import { WebView } from 'react-native-webview';
 
 const MeditationScreen = () => {
   const [isMeditating, setIsMeditating] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const [sound, setSound] = useState();
+  const [sound, setSound] = useState(null);
   const [audioLoaded, setAudioLoaded] = useState(false);
 
   const timerRef = useRef(null);
 
   useEffect(() => {
-    // Load but do NOT auto-play
     const loadAudio = async () => {
       const { sound } = await Audio.Sound.createAsync(
         require('../assets/soothing-sound.mp3'),
@@ -33,7 +31,9 @@ const MeditationScreen = () => {
   }, []);
 
   const startMeditation = async () => {
-    if (!audioLoaded) return;
+    if (audioLoaded && sound) {
+      await sound.playAsync();
+    }
 
     setIsMeditating(true);
     setSeconds(0);
@@ -42,23 +42,29 @@ const MeditationScreen = () => {
       setSeconds((prev) => prev + 1);
     }, 1000);
 
-    await sound.replayAsync(); // play from start
-
     setTimeout(() => {
       clearInterval(timerRef.current);
-      stopMeditation();
+      setIsMeditating(false);
       Alert.alert('Meditation Complete', 'Your meditation for today is completed');
+      if (sound) {
+        sound.stopAsync();
+      }
     }, 840000); // 14 minutes
   };
 
-  const stopMeditation = async () => {
+  const stopMeditation = () => {
     clearInterval(timerRef.current);
     setIsMeditating(false);
     setSeconds(0);
-
     if (sound) {
-      await sound.pauseAsync();
+      sound.stopAsync();
     }
+  };
+
+  const formatTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
@@ -69,19 +75,14 @@ const MeditationScreen = () => {
         {!isMeditating ? (
           <Text style={styles.instructionText}>Close your eyes and start meditating.</Text>
         ) : (
-          <Text style={styles.timer}>
-            {`Time: ${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' : ''}${seconds % 60}`}
-          </Text>
+          <Text style={styles.timer}>{`Time: ${formatTime(seconds)}`}</Text>
         )}
 
-        {/* WebView for animated GIF */}
         <View style={styles.gifWrapper}>
-          <WebView
-            source={{ uri: 'https://media.giphy.com/media/3o7TKPdUkkbGvZcQ76/giphy.gif' }} // Replace with your uploaded gif URL
+          <Image
+            source={require('../assets/7TAQ.gif')}
             style={styles.gif}
-            originWhitelist={['*']}
-            javaScriptEnabled
-            scrollEnabled={false}
+            resizeMode="contain"
           />
         </View>
 
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
   card: {
     marginTop: 60,
     marginHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 24,
     padding: 20,
     alignItems: 'center',
@@ -142,12 +143,13 @@ const styles = StyleSheet.create({
   gifWrapper: {
     width: width * 0.85,
     height: 300,
-    borderRadius: 16,
-    overflow: 'hidden',
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   gif: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   button: {
     backgroundColor: '#4caf50',

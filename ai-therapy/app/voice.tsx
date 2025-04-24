@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    
   },
   text: {
     textAlign: 'center',
@@ -157,8 +158,8 @@ const styles = StyleSheet.create({
     lineHeight: 34,
   },
   image: {
-    width: 300,
-    height: 400,
+    width: 400,
+    height: 450,
     marginBottom: 40,
   },
   micButton: {

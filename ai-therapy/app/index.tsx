@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect } from 'expo-router';
 import { useEffect, useState } from 'react';
+import 'react-native-reanimated';
+
 
 export default function Index() {
   const [username, setUsername] = useState<string | null | undefined>(undefined);

@@ -23,7 +23,7 @@ const EmergencyToolkit: React.FC = () => {
           <Text style={styles.buttonText}>Self-Care</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => {router.push('/SoothingMusicScreen')}}>
           <Entypo name="music" size={36} color="#355E3B" />
           <Text style={styles.buttonText}>Uplifting{"\n"}music</Text>
         </TouchableOpacity>

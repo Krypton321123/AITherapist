@@ -74,16 +74,12 @@ const ProfileScreen = () => {
         <Text style={styles.profileTitle}>Profile</Text>
         <View style={styles.profileInfo}>
           <Image
-            source={{ uri: 'https://i.pravatar.cc/150?img=36' }}
+            source={require('../assets/profile.png')} // Replace with your avatar image
             style={styles.avatar}
           />
           <View style={{ marginLeft: 16 }}>
-            <Text style={styles.name}>Anamika</Text>
-            <View style={styles.badges}>
-              <Text style={styles.badge}>🌟 Pro</Text>
-              <Text style={styles.badge}>📘 BOE</Text>
-              <Text style={styles.badge}>😊 Happy</Text>
-            </View>
+            <Text style={styles.name}>User</Text>
+            
           </View>
         </View>
       </View>

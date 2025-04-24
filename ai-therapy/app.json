@@ -36,6 +36,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "moti": {
+        "useReanimated2": true
+      }
     }
   }
 }

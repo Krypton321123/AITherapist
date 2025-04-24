@@ -96,20 +96,15 @@ const Dashboard: React.FC = () => {
       <ScrollView style={styles.container}>
         <View style={{ marginTop: 20 }}>
           <Animated.Text style={[styles.welcomeText, welcomeAnim]}>
-            {username ? `Welcome, ${username}` : ''}
+          🌱      {username ? `Welcome, ${username}` : ''}      🌱
           </Animated.Text>
         </View>
 
-        {/* Header */}
-        <View style={styles.header}>
-          <Image source={require('../assets/logo2.png')} style={styles.logo} />
-          <Text style={styles.headerTitle}>Home</Text>
-          <Ionicons name="search" size={24} color="#3e3e2a" />
-        </View>
+        
 
         {/* Banner */}
         <View style={styles.banner}>
-          <Text style={styles.bannerText}>Introduction to Mental Health Issues</Text>
+          <Text style={styles.bannerText}>Your AI Therapist , Mindy</Text>
           <Image source={require('../assets/banner (2).png')} style={styles.bannerImage} />
         </View>
 
@@ -135,37 +130,51 @@ const Dashboard: React.FC = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/voice')} style={styles.chatCard}>
             <Image source={require('../assets/coach.png')} style={styles.chatImage} />
-            <Text style={styles.chatText}>Talk with{'\n'}Coach</Text>
+            <Text style={styles.chatText}>Talk with{'\n'}Mindy</Text>
           </TouchableOpacity>
         </View>
 
         {/* Plans */}
-        <Text style={styles.planHeader}>Your plans for today (0/5)</Text>
+        <Text style={styles.planHeader}>Your plans for today (0/3)</Text>
 
-        <TouchableOpacity onPress={() => router.push('/MentalExcerciseScreen')}>
+        <TouchableOpacity onPress={() => router.push('/MeditationScreen')}>
           <View style={styles.planCard}>
             <View style={styles.planLine} />
             <View style={styles.planContent}>
               <Text style={styles.planTitle}>Intro to Meditation</Text>
-              <Text style={styles.planSubtitle}>8 mins</Text>
+              <Text style={styles.planSubtitle}>15 mins</Text>
             </View>
             <Image source={require('../assets/yoga1.png')} style={styles.planImage} />
           </View>
         </TouchableOpacity>
 
-        <View style={styles.planCard}>
-          <View style={styles.planLine} />
-          <View style={styles.planContent}>
-            <Text style={styles.planTitle}>Mindfulness Techniques to...</Text>
-            <Text style={styles.planSubtitle}>2 mins read</Text>
+        <TouchableOpacity onPress={() => router.push('/toolkit')}>
+          <View style={styles.planCard}>
+            <View style={styles.planLine} />
+            <View style={styles.planContent}>
+              <Text style={styles.planTitle}>Your Emergency Toolkit</Text>
+              <Text style={styles.planSubtitle}>20 mins</Text>
+            </View>
+            <Image source={require('../assets/doctor1.png')} style={styles.planImage} />
           </View>
-          <Image source={require('../assets/doctor1.png')} style={styles.planImage} />
-        </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push('/MindfulnessScreen')}>
+          <View style={styles.planCard}>
+            <View style={styles.planLine} />
+            <View style={styles.planContent}>
+              <Text style={styles.planTitle}>Mindfulness Techniques</Text>
+              <Text style={styles.planSubtitle}>5 mins</Text>
+            </View>
+            <Image source={require('../assets/yoga1.png')} style={styles.planImage} />
+          </View>
+        </TouchableOpacity>
+
       </ScrollView>
 
       {/* Tab Bar */}
       <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/toolkit2')}>
+        <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/dashboard')}>
           <Ionicons name="home" size={26} style={[styles.tabIcon, styles.tabIconActive]} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/voice')}>
@@ -174,9 +183,9 @@ const Dashboard: React.FC = () => {
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/toolkit')}>
           <Feather name="moon" size={26} style={styles.tabIconInactive} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/mood')}>
+        {/* <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/mood')}>
           <FontAwesome5 name="chart-line" size={24} style={styles.tabIconInactive} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.tabItem} onPress={() => router.push('/profile')}>
           <Ionicons name="person" size={26} style={styles.tabIconInactive} />
         </TouchableOpacity>
